@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Faltas | SESI SENAI</title>
+  <style>
+    :root {
+      --primary: #004b87;       /* Azul SENAI */
+      --primary-dark: #002f5a;  /* Azul Escuro */
+      --primary-light: #e6f0fa; /* Azul Suave */
+      --accent: #e30613;        /* Vermelho SESI/SENAI */
+      --accent-hover: #b8050f;
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      
+      /* Cores de Status */
+      --safe: #10b981;
+      --safe-bg: #ecfdf5;
+      --safe-border: #a7f3d0;
+      
+      --warn: #f59e0b;
+      --warn-bg: #fffbeb;
+      --warn-border: #fde68a;
+      
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+      --transition: all 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 50px;
+    }
+
+    /* Cabeçalho */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: #ffffff;
+      padding: 1.5rem 1rem;
+      border-bottom: 4px solid var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .header-container {
+      max-width: 1050px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-badge {
+      background: #ffffff;
+      color: var(--primary-dark);
+      font-weight: 900;
+      font-size: 1.1rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .logo-badge span {
+      color: var(--accent);
+    }
+
+    .header-titles h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .header-titles p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    /* Configuração Global de Tolerância */
+    .global-setting {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .global-setting label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .global-setting input {
+      width: 65px;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: #ffffff;
+      color: var(--text-main);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    /* Container Principal */
+    .main-container {
+      max-width: 1050px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Navegação por Abas */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Cards e Layout */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Grid Responsivo */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .global-setting {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    /* Formulários e Inputs */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group .hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: #ffffff;
+      transition: var(--transition);
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 75, 135, 0.15);
+    }
+
+    .input-suffix {
+      position: absolute;
+      right: 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Botões */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-accent:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+    }
+
+    .btn-danger-outline:hover {
+      background: var(--danger-bg);
+    }
+
+    /* Mensagens de Alerta e Validação */
+    .alert-box {
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      display: none;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .alert-box.active {
+      display: flex;
+    }
+
+    .alert-danger {
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
+    }
+
+    /* Status Visual Geral */
+    .status-banner {
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .status-banner.status-safe {
+      background-color: var(--safe-bg);
+      border-color: var(--safe);
+      color: #065f46;
+    }
+
+    .status-banner.status-warn {
+      background-color: var(--warn-bg);
+      border-color: var(--warn);
+      color: #92400e;
+    }
+
+    .status-banner.status-danger {
+      background-color: var(--danger-bg);
+      border-color: var(--accent);
+      color: #991b1b;
+    }
+
+    .status-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .status-safe .status-icon { color: var(--safe); }
+    .status-warn .status-icon { color: var(--warn); }
+    .status-danger .status-icon { color: var(--danger); }
+
+    .status-info h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .status-info p {
+      font-size: 0.85rem;
+    }
+
+    /* Estatísticas em Destaque */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-card {
+      background: var(--bg);
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .metric-value small {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Barras de Progresso */
+    .progress-section {
+      margin-top: 1rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .progress-bar-bg {
+      height: 12px;
+      background-color: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease, background-color 0.4s ease;
+      width: 0%;
+    }
+
+    .progress-safe { background-color: var(--safe); }
+    .progress-warn { background-color: var(--warn); }
+    .progress-danger { background-color: var(--danger); }
+
+    /* Indicador do Limite Máximo na barra */
+    .limit-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #000000;
+      z-index: 2;
+    }
+
+    /* Tabela de Disciplinas */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #fafbfc;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-safe { background: var(--safe-bg); color: #065f46; border: 1px solid var(--safe-border); }
+    .badge-warn { background: var(--warn-bg); color: #92400e; border: 1px solid var(--warn-border); }
+    .badge-danger { background: var(--danger-bg); color: #991b1b; border: 1px solid var(--danger-border); }
+
+    /* Informações e Instruções Auxiliares */
+    .info-card {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-sm);
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+      color: #1e3a8a;
+    }
+
+    .info-card strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    .info-card ul {
+      margin-left: 1.2rem;
+      margin-top: 0.3rem;
+    }
+
+    /* Modal / Botões de Ação na Tabela */
+    .actions-cell {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .tabs-nav {
+        overflow-x: auto;
+      }
+      .tab-btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="logo-badge">
+          SESI<span>|</span>SENAI
+        </div>
+        <div class="header-titles">
+          <h1>Calculadora de Faltas Escolar</h1>
+          <p>Monitoramento e Controle de Frequência do Aluno</p>
+        </div>
+      </div>
+
+      <!-- Configuração do Percentual Máximo de Faltas -->
+      <div class="global-setting" title="Regulamento educacional: limite padrão de 25% de faltas">
+        <label for="globalMaxPercent">Limite Permitido:</label>
+        <div class="input-wrapper" style="width: auto;">
+          <input type="number" id="globalMaxPercent" value="25" min="1" max="100" step="1">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-container">
+    
+    <!-- Navegação por Abas -->
+    <nav class="tabs-nav" aria-label="Modo de Cálculo">
+      <button class="tab-btn active" id="tabBtnSingle" onclick="switchTab('single')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+        Cálculo Rápido (Disciplina Única)
+      </button>
+      <button class="tab-btn" id="tabBtnMulti" onclick="switchTab('multi')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Período Completo (Múltiplas Disciplinas)
+      </button>
+    </nav>
+
+    <!-- ==================== ABA 1: CÁLCULO RÁPIDO ==================== -->
+    <section id="sectionSingle">
+      <div class="grid-2">
+        
+        <!-- Formulário de Entrada -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Dados da Frequência
+          </h2>
+
+          <div id="singleAlert" class="alert-box alert-danger">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="singleAlertText">Erro de validação.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="singleWorkload">Carga Horária Total (Horas ou Aulas):</label>
+            <div class="input-wrapper">
+              <input type="number" id="singleWorkload" placeholder="Ex: 80" min="1" step="any" value="80">
+              <span class="input-suffix">h / aulas</span>
+            </div>
+            <div class="hint">Carga horária total estipulada no plano de ensino da disciplina.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="singleAbsences">Faltas Já Registradas:</label>
+            <div class="input-wrapper">
+              <input type="number" id="singleAbsences" placeholder="Ex: 8" min="0" step="any" value="8">
+              <span class="input-suffix">faltas</span>
+            </div>
+            <div class="hint">Quantidade de horas ou aulas que o aluno já faltou até hoje.</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="calculateSingle()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Calcular Situação
+            </button>
+            <button class="btn btn-outline" onclick="resetSingle()" title="Limpar Campos">
+              Limpar
+            </button>
+          </div>
+
+          <div class="info-card">
+            <strong>Critério SESI/SENAI:</strong>
+            O limite padrão estabelecido é de até <strong>25% de faltas</strong> (mínimo de 75% de presença para aprovação). O limite pode ser reconfigurado no topo da página.
+          </div>
+        </div>
+
+        <!-- Painel de Resultados Visuais -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Diagnóstico de Frequência
+          </h2>
+
+          <!-- Status Banner Dinâmico -->
+          <div id="singleStatusBanner" class="status-banner status-safe">
+            <div class="status-icon" id="singleStatusIcon">✓</div>
+            <div class="status-info">
+              <h4 id="singleStatusTitle">Frequência Segura</h4>
+              <p id="singleStatusDesc">O aluno está com frequência adequada e dentro da margem permitida.</p>
+            </div>
+          </div>
+
+          <!-- Métricas Numéricas -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Limite Permitido</div>
+              <div class="metric-value" id="singleLimitVal">20 <small>faltas</small></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Faltas Acumuladas</div>
+              <div class="metric-value" id="singleAbsencesVal">8 <small>faltas</small></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Faltas Restantes</div>
+              <div class="metric-value" id="singleRemainingVal">12 <small>restantes</small></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">% de Faltas Atual</div>
+              <div class="metric-value" id="singlePercentVal">10.0%</div>
+            </div>
+          </div>
+
+          <!-- Barra de Progresso de Faltas -->
+          <div class="progress-section">
+            <div class="progress-header">
+              <span>Uso do Limite de Faltas:</span>
+              <span id="singleProgressLabel">40% do limite atingido</span>
+            </div>
+            <div class="progress-bar-bg" title="Barra de consumo do limite de faltas">
+              <div id="singleProgressBar" class="progress-bar-fill progress-safe" style="width: 40%;"></div>
+            </div>
+          </div>
+
+          <!-- Barra de Presença do Aluno -->
+          <div class="progress-section" style="margin-top: 1rem;">
+            <div class="progress-header">
+              <span>Taxa de Presença do Aluno:</span>
+              <span id="singleAttendanceLabel" style="font-weight: 700; color: var(--primary);">90.0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="singleAttendanceBar" class="progress-bar-fill progress-safe" style="width: 90%;"></div>
+            </div>
+            <div class="hint" style="margin-top: 0.35rem; text-align: right;">Presença mínima exigida: <strong id="singleMinAttendanceLabel">75%</strong></div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== ABA 2: MÚLTIPLAS DISCIPLINAS (PERÍODO) ==================== -->
+    <section id="sectionMulti" style="display: none;">
+      
+      <!-- Formulário para Adicionar Disciplina -->
+      <div class="card">
+        <h2 class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Adicionar Disciplina ao Período
+        </h2>
+
+        <div id="multiAlert" class="alert-box alert-danger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="multiAlertText">Erro ao cadastrar disciplina.</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.75rem; align-items: end;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="discName">Nome da Disciplina:</label>
+            <div class="input-wrapper">
+              <input type="text" id="discName" placeholder="Ex: Metrologia Aplicada">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="discWorkload">Carga Horária:</label>
+            <div class="input-wrapper">
+              <input type="number" id="discWorkload" placeholder="Ex: 80" min="1" step="any">
+              <span class="input-suffix">h</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="discAbsences">Faltas Registradas:</label>
+            <div class="input-wrapper">
+              <input type="number" id="discAbsences" placeholder="Ex: 10" min="0" step="any">
+              <span class="input-suffix">h</span>
+            </div>
+          </div>
+
+          <div>
+            <button class="btn btn-primary" onclick="addDiscipline()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumo Geral do Período -->
+      <div class="card">
+        <h2 class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Quadro Geral do Período / Semestre
+        </h2>
+
+        <!-- Status Consolidado -->
+        <div id="periodStatusBanner" class="status-banner status-safe">
+          <div class="status-icon" id="periodStatusIcon">✓</div>
+          <div class="status-info">
+            <h4 id="periodStatusTitle">Situação do Aluno: Regular</h4>
+            <p id="periodStatusDesc">Todas as disciplinas cadastradas estão dentro do limite tolerado de faltas.</p>
+          </div>
+        </div>
+
+        <!-- Totais Somados do Período -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Carga Horária Total</div>
+            <div class="metric-value" id="periodTotalCH">0 <small>horas</small></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Total de Faltas Acumuladas</div>
+            <div class="metric-value" id="periodTotalAbsences">0 <small>faltas</small></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Limite Geral do Período</div>
+            <div class="metric-value" id="periodTotalLimit">0 <small>faltas</small></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Frequência Geral (% Presença)</div>
+            <div class="metric-value" id="periodAttendance">100.0%</div>
+          </div>
+        </div>
+
+        <!-- Tabela Detalhada por Disciplina -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Disciplina</th>
+                <th>Carga Horária</th>
+                <th>Faltas Atuais</th>
+                <th>Limite Permitido</th>
+                <th>Faltas Restantes</th>
+                <th>% Faltas</th>
+                <th>Situação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="disciplinesTableBody">
+              <!-- Inserido dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+          <button class="btn btn-outline btn-sm" onclick="loadSampleData()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Carregar Exemplo com 4 Disciplinas
+          </button>
+          <button class="btn btn-danger-outline btn-sm" onclick="clearDisciplines()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Limpar Todas as Disciplinas
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT PURO -->
+  <script>
+    /**
+     * Calculadora de Faltas Escolar - SESI / SENAI
+     * Desenvolvida em JavaScript Puro (Vanilla JS).
+     */
+
+    // Lista de disciplinas para a Aba de Múltiplas Disciplinas
+    let disciplines = [];
+
+    // Inicialização ao carregar o DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cálculo inicial da aba rápida
+      calculateSingle();
+
+      // Recalcular instantaneamente ao alterar o percentual máximo global
+      document.getElementById("globalMaxPercent").addEventListener("input", () => {
+        calculateSingle();
+        renderDisciplines();
+      });
+
+      // Recalcular em tempo real ao digitar nos campos da aba individual
+      document.getElementById("singleWorkload").addEventListener("input", calculateSingle);
+      document.getElementById("singleAbsences").addEventListener("input", calculateSingle);
+    });
+
+    /**
+     * Alternar entre as abas 'single' (individual) e 'multi' (período)
+     */
+    function switchTab(mode) {
+      const secSingle = document.getElementById("sectionSingle");
+      const secMulti = document.getElementById("sectionMulti");
+      const btnSingle = document.getElementById("tabBtnSingle");
+      const btnMulti = document.getElementById("tabBtnMulti");
+
+      if (mode === "single") {
+        secSingle.style.display = "block";
+        secMulti.style.display = "none";
+        btnSingle.classList.add("active");
+        btnMulti.classList.remove("active");
+        calculateSingle();
+      } else {
+        secSingle.style.display = "none";
+        secMulti.style.display = "block";
+        btnMulti.classList.add("active");
+        btnSingle.classList.remove("active");
+        renderDisciplines();
+      }
+    }
+
+    /**
+     * Obter o percentual máximo global configurado pelo usuário
+     */
+    function getMaxPercent() {
+      const val = parseFloat(document.getElementById("globalMaxPercent").value);
+      if (isNaN(val) || val <= 0 || val > 100) {
+        return 25; // fallback para o padrão educacional de 25%
+      }
+      return val;
+    }
+
+    /**
+     * Função pura para calcular indicadores de faltas
+     */
+    function computeAbsenceMetrics(workload, absences, maxPercent) {
+      const limit = (workload * maxPercent) / 100;
+      const remaining = limit - absences;
+      const absencePercent = workload > 0 ? (absences / workload) * 100 : 0;
+      const attendancePercent = Math.max(0, 100 - absencePercent);
+      const limitUsagePercent = limit > 0 ? (absences / limit) * 100 : 0;
+
+      // Status visual:
+      // Seguro: faltas < 75% do limite permitido
+      // Atenção: faltas >= 75% e < 100% do limite permitido
+      // Perigo: faltas >= 100% do limite permitido
+      let status = "safe";
+      if (absences >= limit) {
+        status = "danger";
+      } else if (absences >= limit * 0.75) {
+        status = "warn";
+      }
+
+      return {
+        limit,
+        remaining,
+        absencePercent,
+        attendancePercent,
+        limitUsagePercent,
+        status
+      };
+    }
+
+    /* ==============================================================
+       LÓGICA: ABA 1 - CÁLCULO RÁPIDO
+       ============================================================== */
+
+    function showAlertSingle(message) {
+      const alertBox = document.getElementById("singleAlert");
+      const alertText = document.getElementById("singleAlertText");
+      if (message) {
+        alertText.textContent = message;
+        alertBox.classList.add("active");
+      } else {
+        alertBox.classList.remove("active");
+      }
+    }
+
+    function calculateSingle() {
+      const workloadInput = document.getElementById("singleWorkload").value.trim();
+      const absencesInput = document.getElementById("singleAbsences").value.trim();
+      const maxPercent = getMaxPercent();
+
+      // Validação de campos vazios
+      if (workloadInput === "" || absencesInput === "") {
+        showAlertSingle("Por favor, preencha todos os campos obrigatórios.");
+        return;
+      }
+
+      const workload = parseFloat(workloadInput);
+      const absences = parseFloat(absencesInput);
+
+      // Validação de regras de negócio
+      if (isNaN(workload) || workload <= 0) {
+        showAlertSingle("A carga horária deve ser um número maior que zero.");
+        return;
+      }
+
+      if (isNaN(absences) || absences < 0) {
+        showAlertSingle("O número de faltas não pode ser negativo.");
+        return;
+      }
+
+      if (absences > workload) {
+        showAlertSingle("O número de faltas (" + absences + ") não pode exceder a carga horária total (" + workload + ").");
+        return;
+      }
+
+      // Tudo válido: limpa erros e processa métricas
+      showAlertSingle(null);
+
+      const metrics = computeAbsenceMetrics(workload, absences, maxPercent);
+
+      // Atualiza valores nas caixas de estatísticas
+      document.getElementById("singleLimitVal").innerHTML = metrics.limit.toFixed(1).replace(/\.0$/, "") + " <small>faltas</small>";
+      document.getElementById("singleAbsencesVal").innerHTML = absences.toFixed(1).replace(/\.0$/, "") + " <small>faltas</small>";
+      
+      const remainingElem = document.getElementById("singleRemainingVal");
+      if (metrics.remaining <= 0) {
+        const excess = Math.abs(metrics.remaining);
+        remainingElem.innerHTML = "<span style='color: var(--danger); font-size: 1.15rem;'>" + (excess === 0 ? "Limite atingido (0)" : "Excedido em " + excess.toFixed(1).replace(/\.0$/, "") + "") + "</span>";
+      } else {
+        remainingElem.innerHTML = metrics.remaining.toFixed(1).replace(/\.0$/, "") + " <small>restantes</small>";
+      }
+
+      document.getElementById("singlePercentVal").textContent = metrics.absencePercent.toFixed(1) + "%";
+      
+      // Atualizar Banner de Status Visual
+      const banner = document.getElementById("singleStatusBanner");
+      const icon = document.getElementById("singleStatusIcon");
+      const title = document.getElementById("singleStatusTitle");
+      const desc = document.getElementById("singleStatusDesc");
+
+      banner.className = "status-banner status-" + metrics.status;
+
+      if (metrics.status === "safe") {
+        icon.textContent = "✓";
+        title.textContent = "Frequência Segura";
+        desc.textContent = "O aluno possui boa assiduidade e ainda pode ter até " + metrics.remaining.toFixed(1).replace(/\.0$/, "") + " falta(s) sem reprovar.";
+      } else if (metrics.status === "warn") {
+        icon.textContent = "!";
+        title.textContent = "Atenção: Próximo ao Limite";
+        desc.textContent = "Frequência em risco! O aluno atingiu mais de 75% da tolerância. Restam apenas " + metrics.remaining.toFixed(1).replace(/\.0$/, "") + " falta(s).";
+      } else {
+        icon.textContent = "✕";
+        title.textContent = "Limite Atingido / Ultrapassado";
+        desc.textContent = "Reprovação por falta! O percentual de faltas atingiu ou excedeu os " + maxPercent + "% permitidos.";
+      }
+
+      // Barra de Uso do Limite
+      const clampedUsage = Math.min(100, Math.max(0, metrics.limitUsagePercent));
+      const progBar = document.getElementById("singleProgressBar");
+      progBar.style.width = clampedUsage + "%";
+      progBar.className = "progress-bar-fill progress-" + metrics.status;
+      document.getElementById("singleProgressLabel").textContent = metrics.limitUsagePercent.toFixed(1) + "% do limite utilizado";
+
+      // Barra de Presença Geral
+      const attBar = document.getElementById("singleAttendanceBar");
+      attBar.style.width = Math.min(100, Math.max(0, metrics.attendancePercent)) + "%";
+      attBar.className = "progress-bar-fill progress-" + (metrics.attendancePercent >= (100 - maxPercent) ? (metrics.status === "warn" ? "warn" : "safe") : "danger");
+      document.getElementById("singleAttendanceLabel").textContent = metrics.attendancePercent.toFixed(1) + "%";
+      document.getElementById("singleMinAttendanceLabel").textContent = (100 - maxPercent) + "%";
+    }
+
+    function resetSingle() {
+      document.getElementById("singleWorkload").value = "";
+      document.getElementById("singleAbsences").value = "";
+      showAlertSingle(null);
+    }
+
+    /* ==============================================================
+       LÓGICA: ABA 2 - MÚLTIPLAS DISCIPLINAS (PERÍODO)
+       ============================================================== */
+
+    function showAlertMulti(message) {
+      const alertBox = document.getElementById("multiAlert");
+      const alertText = document.getElementById("multiAlertText");
+      if (message) {
+        alertText.textContent = message;
+        alertBox.classList.add("active");
+      } else {
+        alertBox.classList.remove("active");
+      }
+    }
+
+    function addDiscipline() {
+      const nameInput = document.getElementById("discName");
+      const workloadInput = document.getElementById("discWorkload");
+      const absencesInput = document.getElementById("discAbsences");
+
+      const name = nameInput.value.trim() || ("Disciplina " + (disciplines.length + 1));
+      const workload = parseFloat(workloadInput.value.trim());
+      const absences = parseFloat(absencesInput.value.trim());
+
+      // Validações
+      if (isNaN(workload) || workload <= 0) {
+        showAlertMulti("Informe uma carga horária válida maior que zero.");
+        return;
+      }
+
+      if (isNaN(absences) || absences < 0) {
+        showAlertMulti("O número de faltas não pode ser negativo.");
+        return;
+      }
+
+      if (absences > workload) {
+        showAlertMulti("As faltas (" + absences + "h) não podem ser maiores que a carga horária (" + workload + "h).");
+        return;
+      }
+
+      showAlertMulti(null);
+
+      // Adiciona ao array
+      disciplines.push({
+        id: Date.now(),
+        name,
+        workload,
+        absences
+      });
+
+      // Limpa os campos
+      nameInput.value = "";
+      workloadInput.value = "";
+      absencesInput.value = "";
+      nameInput.focus();
+
+      renderDisciplines();
+    }
+
+    function removeDiscipline(id) {
+      disciplines = disciplines.filter(d => d.id !== id);
+      renderDisciplines();
+    }
+
+    function clearDisciplines() {
+      if (disciplines.length === 0) return;
+      if (confirm("Deseja realmente remover todas as disciplinas cadastradas?")) {
+        disciplines = [];
+        renderDisciplines();
+      }
+    }
+
+    function loadSampleData() {
+      disciplines = [
+        { id: 1, name: "Metrologia Industrial", workload: 60, absences: 6 },
+        { id: 2, name: "Leitura e Interpretação de Desenho", workload: 80, absences: 18 },
+        { id: 3, name: "Tecnologia Mecânica", workload: 100, absences: 26 },
+        { id: 4, name: "Segurança no Trabalho (NR-12)", workload: 40, absences: 2 }
+      ];
+      renderDisciplines();
+    }
+
+    function renderDisciplines() {
+      const tbody = document.getElementById("disciplinesTableBody");
+      const maxPercent = getMaxPercent();
+
+      if (disciplines.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              Nenhuma disciplina cadastrada ainda. Utilize o formulário acima ou clique em "Carregar Exemplo".
+            </td>
+          </tr>
+        `;
+        updatePeriodSummary(0, 0, 0, 0, "safe");
+        return;
+      }
+
+      let totalCH = 0;
+      let totalAbs = 0;
+      let totalLimit = 0;
+      let anyDanger = false;
+      let anyWarn = false;
+
+      let html = "";
+
+      disciplines.forEach((d) => {
+        const m = computeAbsenceMetrics(d.workload, d.absences, maxPercent);
+
+        totalCH += d.workload;
+        totalAbs += d.absences;
+        totalLimit += m.limit;
+
+        if (m.status === "danger") anyDanger = true;
+        if (m.status === "warn") anyWarn = true;
+
+        let badgeClass = "badge-safe";
+        let badgeLabel = "Regular";
+        if (m.status === "warn") {
+          badgeClass = "badge-warn";
+          badgeLabel = "Atenção";
+        } else if (m.status === "danger") {
+          badgeClass = "badge-danger";
+          badgeLabel = "Excedido";
+        }
+
+        const remainingText = m.remaining <= 0 
+          ? `<strong style="color: var(--danger);">${m.remaining === 0 ? "0 restantes" : "Excedido em " + Math.abs(m.remaining).toFixed(1) + "h"}</strong>`
+          : `${m.remaining.toFixed(1).replace(/\.0$/, "")}h`;
+
+        html += `
+          <tr>
+            <td><strong>${escapeHtml(d.name)}</strong></td>
+            <td>${d.workload}h</td>
+            <td>${d.absences}h</td>
+            <td>${m.limit.toFixed(1).replace(/\.0$/, "")}h (${maxPercent}%)</td>
+            <td>${remainingText}</td>
+            <td>${m.absencePercent.toFixed(1)}%</td>
+            <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-danger-outline btn-sm" onclick="removeDiscipline(${d.id})" title="Remover Disciplina">
+                  Remover
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+
+      // Determinar o status geral do período
+      let overallStatus = "safe";
+      if (anyDanger) {
+        overallStatus = "danger";
+      } else if (anyWarn) {
+        overallStatus = "warn";
+      }
+
+      updatePeriodSummary(totalCH, totalAbs, totalLimit, maxPercent, overallStatus);
+    }
+
+    function updatePeriodSummary(totalCH, totalAbs, totalLimit, maxPercent, status) {
+      document.getElementById("periodTotalCH").innerHTML = totalCH + " <small>horas</small>";
+      document.getElementById("periodTotalAbsences").innerHTML = totalAbs + " <small>faltas</small>";
+      document.getElementById("periodTotalLimit").innerHTML = totalLimit.toFixed(1).replace(/\.0$/, "") + " <small>faltas</small>";
+
+      const attendance = totalCH > 0 ? Math.max(0, 100 - (totalAbs / totalCH) * 100) : 100;
+      document.getElementById("periodAttendance").textContent = attendance.toFixed(1) + "%";
+
+      const banner = document.getElementById("periodStatusBanner");
+      const icon = document.getElementById("periodStatusIcon");
+      const title = document.getElementById("periodStatusTitle");
+      const desc = document.getElementById("periodStatusDesc");
+
+      banner.className = "status-banner status-" + status;
+
+      if (disciplines.length === 0) {
+        icon.textContent = "ℹ";
+        title.textContent = "Aguardando Cadastro";
+        desc.textContent = "Cadastre as disciplinas do aluno para apurar a situação consolidada do período letivo.";
+      } else if (status === "safe") {
+        icon.textContent = "✓";
+        title.textContent = "Situação do Aluno: Regular";
+        desc.textContent = "Todas as disciplinas cadastradas estão com frequência segura e dentro do limite permitido de faltas.";
+      } else if (status === "warn") {
+        icon.textContent = "!";
+        title.textContent = "Alerta: Disciplina(s) Próxima(s) do Limite";
+        desc.textContent = "Uma ou mais disciplinas atingiram nível de atenção (acima de 75% da tolerância). Recomenda-se orientação pedagógica.";
+      } else {
+        icon.textContent = "✕";
+        title.textContent = "Crítico: Reprovação por Frequência";
+        desc.textContent = "O limite máximo de faltas foi atingido ou ultrapassado em pelo menos uma disciplina deste período.";
+      }
+    }
+
+    // Função utilitária para evitar injeção de HTML no nome da disciplina
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+  </script>
+</body>
+</html>
